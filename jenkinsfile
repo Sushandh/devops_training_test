@@ -1,23 +1,21 @@
-pipeline {
-agent any
-stages {
-  stage('Checkout') {
-    steps {
-// Checkout code from the Git repository
-     sh 'echo checking out'
-   }
-  }
-stage('Build') {
-  steps {
-// Build the Java application (replace with your build commands)
-  sh 'javac -version'
- }
+pipeline{
+agent any{
+stages{
+stage("create build SCM"){
+steps{
+script{
+sh 'mkdir -p scm'
+writeFile file: 'scm/testfile.txt', text: 'hi testfile has been executed '
+writeFile file: 'scm/testfiles.md', text: 'hi testfiles has been executed'
 }
-stage('Deploy') {
-  steps {
-  // Deploy the application (replace with your deployment commands)
-   sh 'echo "Deploying the application"'
-   }
-  }
- }
+}
+}
+stage("Archieve build SCM"){
+steps {
+archiveArtifacts artifacts: 'scm/*.txt', excludes: 'scm/*.md', followSymlinks: false
+input 'Do i need to continue '
+}
+}
+}
+}
 }
